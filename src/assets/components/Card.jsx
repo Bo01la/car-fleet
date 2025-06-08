@@ -69,11 +69,11 @@ export default function Card({
         </p>
         <p className="font-semibold">
           last time changed tires:
-          <span className="font-light">{`since ${onDate}`}</span>
+          <span className="font-light">{` ${onDate}`}</span>
         </p>
         <p className="font-semibold">
           tires changed on:
-          <span className="font-light">{`on ${onKM} km`}</span>
+          <span className="font-light">{`${onKM} km`}</span>
         </p>
         <p className="font-semibold">
           last time changed battery:
@@ -83,7 +83,7 @@ export default function Card({
           cost:
           <span className="font-light">{cost}</span>
         </p>
-        <button onClick={show}>Edit</button>
+        <button onClick={show} className=" ml-[25%] max-w-1/2 bg-blue-600 text-white py-2 rounded hover:bg-green-600 ">Edit</button>
       </div>
     </>
   );

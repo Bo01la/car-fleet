@@ -1,14 +1,11 @@
-import { useRef, useImperativeHandle, useState, useContext } from "react";
-import { updateDoc, doc } from "firebase/firestore";
+import React, { useRef, useContext, useImperativeHandle } from "react";
+import { addDoc, doc } from "firebase/firestore";
 
-import { db } from "../../firebase";
+import { COLLECTION_REF } from "../../firebase";
 import { DataContext } from "../store/DataContext";
 
-export default function Modal({ ref, id, onClose }) {
-  const DOC_REF = doc(db, "vehicles", id);
-  const { cars, setCars } = useContext(DataContext);
-  const car = cars.find((car) => car.id === id);
-  const dialogRef = useRef();
+export default function AddCar({ ref, onClose }) {
+  const carRef = useRef();
   const plateNumber = useRef();
   const distance = useRef();
   const status = useRef();
@@ -21,16 +18,21 @@ export default function Modal({ ref, id, onClose }) {
   const tiresOnDate = useRef();
   const tiresOnKm = useRef();
   const cost = useRef();
+  const { setCars } = useContext(DataContext);
 
   useImperativeHandle(ref, () => {
     return {
-      open: () => dialogRef.current.showModal(),
+      open: () => carRef.current.showModal(),
     };
   });
 
+  function dateToSeconds(dateStr) {
+    return Math.floor(new Date(dateStr).getTime() / 1000);
+  }
+
   async function onSubmitHandler(e) {
     e.preventDefault();
-    const updatedCarValues = {
+    const newCar = {
       maintenanceStatus: {
         needsMaintenance:
           maintenanceStatus.current.value === "yes" ? true : false,
@@ -56,36 +58,20 @@ export default function Modal({ ref, id, onClose }) {
         },
       },
       plateNumber: plateNumber.current.value,
-      id: id,
     };
     try {
-      await updateDoc(DOC_REF, updatedCarValues);
-      console.log("Document successfully updated!", updatedCarValues);
+      await addDoc(COLLECTION_REF, newCar);
+      console.log("Document successfully added!", newCar);
+      setCars((prevCars) => [...prevCars, newCar]);
       onClose();
-      setCars((prevCars) =>
-        prevCars.map((car) =>
-          car.id === id ? { ...car, ...updatedCarValues } : car
-        )
-      );
     } catch (error) {
-      console.log("Error updating document: ", error);
+      console.log("Error adding document: ", error);
     }
   }
 
-  function formatDateFromSeconds(seconds) {
-    const date = new Date(seconds * 1000);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function dateToSeconds(dateStr) {
-    return Math.floor(new Date(dateStr).getTime() / 1000);
-  }
   return (
     <dialog
-      ref={dialogRef}
+      ref={carRef}
       className="bg-black/35 max-w-screen max-h-fit flex justify-center py-4 overflow-y-auto w-full h-full fixed top-0 left-0 z-50 "
     >
       <form
@@ -98,7 +84,7 @@ export default function Modal({ ref, id, onClose }) {
             ref={plateNumber}
             name="plateNumber"
             type="text"
-            defaultValue={car.plateNumber || ""}
+            defaultValue=""
             required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
@@ -110,7 +96,7 @@ export default function Modal({ ref, id, onClose }) {
             ref={distance}
             name="distanceUsedKm"
             type="number"
-            defaultValue={car.distanceUsedKm || 0}
+            defaultValue=""
             min={0}
             required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
@@ -122,7 +108,7 @@ export default function Modal({ ref, id, onClose }) {
           <select
             ref={status}
             name="status"
-            defaultValue={car.status || "active"}
+            defaultValue=""
             required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           >
@@ -137,7 +123,7 @@ export default function Modal({ ref, id, onClose }) {
             ref={driver}
             name="driver"
             type="text"
-            defaultValue={car.driver || ""}
+            defaultValue=""
             required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
@@ -149,7 +135,7 @@ export default function Modal({ ref, id, onClose }) {
             ref={model}
             name="model"
             type="text"
-            defaultValue={car.model || ""}
+            defaultValue=""
             required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
@@ -160,7 +146,7 @@ export default function Modal({ ref, id, onClose }) {
           <select
             ref={maintenanceStatus}
             name="needsMaintenance"
-            defaultValue={car.maintenanceStatus.needsMaintenance ? "yes" : "no"}
+            defaultValue=""
             required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           >
@@ -175,11 +161,8 @@ export default function Modal({ ref, id, onClose }) {
             ref={upcomingMaintenanceDate}
             name="upcomingMaintenanceDate"
             type="date"
-            defaultValue={
-              formatDateFromSeconds(
-                car.maintenanceStatus.upcomingMaintenanceDate.seconds
-              ) || ""
-            }
+            defaultValue=""
+            required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
         </label>
@@ -190,11 +173,8 @@ export default function Modal({ ref, id, onClose }) {
             ref={lastMaintenanceDate}
             name="lastMaintenanceDate"
             type="date"
-            defaultValue={
-              formatDateFromSeconds(
-                car.maintenanceStatus.lastMaintenanceDate.seconds
-              ) || ""
-            }
+            defaultValue=""
+            required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
         </label>
@@ -205,7 +185,8 @@ export default function Modal({ ref, id, onClose }) {
             ref={battery}
             name="battery"
             type="date"
-            defaultValue={formatDateFromSeconds(car.battery.seconds) || ""}
+            defaultValue=""
+            required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
         </label>
@@ -216,7 +197,8 @@ export default function Modal({ ref, id, onClose }) {
             ref={tiresOnDate}
             name="onDate"
             type="date"
-            defaultValue={formatDateFromSeconds(car.tires.onDate.seconds) || ""}
+            defaultValue=""
+            required
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
         </label>
@@ -227,7 +209,8 @@ export default function Modal({ ref, id, onClose }) {
             ref={tiresOnKm}
             name="onKM"
             type="number"
-            defaultValue={car.tires.onKM || 0}
+            defaultValue=""
+            required
             min={0}
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
@@ -240,7 +223,8 @@ export default function Modal({ ref, id, onClose }) {
             name="cost"
             type="number"
             step="0.01"
-            defaultValue={car.cost || 0}
+            defaultValue=""
+            required
             min={0}
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full"
           />
@@ -252,7 +236,11 @@ export default function Modal({ ref, id, onClose }) {
         >
           Update
         </button>
-        <button type="button" onClick={onClose} className="mt-4 border border-gray-400 hover:border-gray-700 py-2 rounded">
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-4 border border-gray-400 hover:border-gray-700 py-2 rounded"
+        >
           Cancel
         </button>
       </form>

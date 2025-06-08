@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { COLLECTION_REF } from "../../firebase";
+import {COLLECTION_REF} from "../../firebase";
 import { getDocs } from "firebase/firestore";
 
 export const DataContext = createContext();
@@ -24,7 +24,8 @@ export default function DataContextProvider({ children }) {
   );
 
   const ctxValue = {
-    cars, setCars
+    cars,
+    setCars,
   };
 
   return <DataContext value={ctxValue}>{children}</DataContext>;
