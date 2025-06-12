@@ -1,8 +1,8 @@
 import { useContext, useState, useRef, useEffect } from "react";
-import { DataContext } from "./assets/store/DataContext";
+import { DataContext } from "./store/DataContext";
 
-import Card from "./assets/components/Card";
-import AddCar from "./assets/components/AddCar";
+import Card from "./components/Card";
+import AddCar from "./components/AddCar";
 
 function App() {
   const { cars } = useContext(DataContext);
@@ -39,7 +39,7 @@ function App() {
           className="cursor-pointer"
           onClick={show}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-14 mb-5">
           {cars.map((car) => (
             <Card
               key={car.id}

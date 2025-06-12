@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import { addDoc } from "firebase/firestore";
 
-import { COLLECTION_REF } from "../../firebase";
+import { COLLECTION_REF } from "../firebase";
 import { DataContext } from "../store/DataContext";
 
 export default function AddCar({ ref, onClose }) {

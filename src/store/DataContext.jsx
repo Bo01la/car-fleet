@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import {COLLECTION_REF} from "../../firebase";
+import {COLLECTION_REF} from "../firebase";
 import { getDocs } from "firebase/firestore";
 
 export const DataContext = createContext();

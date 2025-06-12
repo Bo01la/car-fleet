@@ -1,7 +1,7 @@
 import { useRef, useImperativeHandle, useState, useContext } from "react";
 import { updateDoc, doc } from "firebase/firestore";
 
-import { db } from "../../firebase";
+import { db } from "../firebase";
 import { DataContext } from "../store/DataContext";
 
 export default function Modal({ ref, id, onClose }) {
