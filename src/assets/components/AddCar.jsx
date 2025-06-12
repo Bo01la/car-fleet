@@ -1,5 +1,10 @@
-import React, { useRef, useContext, useImperativeHandle } from "react";
-import { addDoc, doc } from "firebase/firestore";
+import React, {
+  useRef,
+  useContext,
+  useImperativeHandle,
+  useState,
+} from "react";
+import { addDoc } from "firebase/firestore";
 
 import { COLLECTION_REF } from "../../firebase";
 import { DataContext } from "../store/DataContext";
@@ -18,7 +23,10 @@ export default function AddCar({ ref, onClose }) {
   const tiresOnDate = useRef();
   const tiresOnKm = useRef();
   const cost = useRef();
+  
   const { setCars } = useContext(DataContext);
+
+  const [disabled, setDisabled] = useState(false);
 
   useImperativeHandle(ref, () => {
     return {
@@ -59,6 +67,7 @@ export default function AddCar({ ref, onClose }) {
       },
       plateNumber: plateNumber.current.value,
     };
+    setDisabled(true);
     try {
       await addDoc(COLLECTION_REF, newCar);
       console.log("Document successfully added!", newCar);
@@ -66,6 +75,8 @@ export default function AddCar({ ref, onClose }) {
       onClose();
     } catch (error) {
       console.log("Error adding document: ", error);
+    } finally {
+      setDisabled(false);
     }
   }
 
@@ -232,14 +243,16 @@ export default function AddCar({ ref, onClose }) {
 
         <button
           type="submit"
-          className="mt-4 bg-blue-600 text-white py-2 rounded hover:bg-green-600"
+          className={`mt-4 bg-blue-600 text-white py-2 rounded hover:bg-green-600 ${
+            disabled ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           Update
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="mt-4 border border-gray-400 hover:border-gray-700 py-2 rounded"
+          className={`mt-4 border border-gray-400 hover:border-gray-700 py-2 rounded `}
         >
           Cancel
         </button>
