@@ -1,8 +1,9 @@
-import { useRef, useImperativeHandle, useState, useContext } from "react";
+import { useRef, useImperativeHandle, useContext } from "react";
 import { updateDoc, doc } from "firebase/firestore";
 
 import { db } from "../firebase";
 import { DataContext } from "../store/DataContext";
+import { dateToSeconds, formatDateFromSeconds } from "../utils/dateFunctions";
 
 export default function Modal({ ref, id, onClose }) {
   const DOC_REF = doc(db, "vehicles", id);
@@ -72,17 +73,7 @@ export default function Modal({ ref, id, onClose }) {
     }
   }
 
-  function formatDateFromSeconds(seconds) {
-    const date = new Date(seconds * 1000);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function dateToSeconds(dateStr) {
-    return Math.floor(new Date(dateStr).getTime() / 1000);
-  }
+  
   return (
     <dialog
       ref={dialogRef}
@@ -252,7 +243,11 @@ export default function Modal({ ref, id, onClose }) {
         >
           Update
         </button>
-        <button type="button" onClick={onClose} className="mt-4 border border-gray-400 hover:border-gray-700 py-2 rounded">
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-4 border border-gray-400 hover:border-gray-700 py-2 rounded"
+        >
           Cancel
         </button>
       </form>

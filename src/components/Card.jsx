@@ -38,7 +38,7 @@ export default function Card({
     <>
       {theModal && <Modal ref={modalRef} id={id} onClose={hide} />}
       <div
-        className={`flex flex-col gap-4 p-3.5 border-2 ${
+        className={`relative flex flex-col gap-4 p-3.5 border-2 overflow-auto scrollbar-hide max-h-80 ${
           needsMaintenance ? " border-red-600" : "border-green-600"
         } rounded-lg`}
       >
@@ -83,7 +83,12 @@ export default function Card({
           cost:
           <span className="font-light">{cost}</span>
         </p>
-        <button onClick={show} className=" ml-[25%] max-w-1/2 bg-blue-600 text-white py-2 rounded hover:bg-green-600 ">Edit</button>
+        <button
+          onClick={show}
+          className="absolute right-1 opacity-65 cursor-pointer bg-cyan-300 rounded-full p-1"
+        >
+          <img src="/src/assets/media/edit.svg" alt="Edit icon" />
+        </button>
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import { addDoc } from "firebase/firestore";
 
 import { COLLECTION_REF } from "../firebase";
 import { DataContext } from "../store/DataContext";
+import { dateToSeconds } from "../utils/dateFunctions";
 
 export default function AddCar({ ref, onClose }) {
   const carRef = useRef();
@@ -34,9 +35,7 @@ export default function AddCar({ ref, onClose }) {
     };
   });
 
-  function dateToSeconds(dateStr) {
-    return Math.floor(new Date(dateStr).getTime() / 1000);
-  }
+  
 
   async function onSubmitHandler(e) {
     e.preventDefault();
