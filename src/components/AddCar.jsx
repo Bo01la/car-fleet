@@ -1,4 +1,4 @@
-import React, { 
+import React, {
   useRef,
   useContext,
   useImperativeHandle,
@@ -24,7 +24,7 @@ export default function AddCar({ ref, onClose }) {
   const tiresOnDate = useRef();
   const tiresOnKm = useRef();
   const cost = useRef();
-  
+
   const { setCars } = useContext(DataContext);
 
   const [disabled, setDisabled] = useState(false);
@@ -34,8 +34,6 @@ export default function AddCar({ ref, onClose }) {
       open: () => carRef.current.showModal(),
     };
   });
-
-  
 
   async function onSubmitHandler(e) {
     e.preventDefault();

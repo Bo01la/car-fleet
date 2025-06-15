@@ -5,7 +5,7 @@ import { db, COLLECTION_REF } from "../firebase";
 import { getCurrentMonthYear } from "../utils/dateFunctions";
 
 export const DataContext = createContext();
-export const currentDate = getCurrentMonthYear();
+export const currentMonth = getCurrentMonthYear();
 
 export default function DataContextProvider({ children }) {
   const [cars, setCars] = useState([]);
@@ -32,7 +32,7 @@ export default function DataContextProvider({ children }) {
   useEffect(
     () => async () => {
       try {
-        const actionsRef = collection(db, "reports", currentDate, "actions");
+        const actionsRef = collection(db, "reports", currentMonth, "actions");
         const snapshot = await getDocs(actionsRef);
 
         const fetchedActions = snapshot.docs.map((doc) => ({
@@ -52,7 +52,7 @@ export default function DataContextProvider({ children }) {
     setCars,
     reports,
     setReports,
-    currentDate,
+    currentMonth,
   };
 
   return <DataContext value={ctxValue}>{children}</DataContext>;
