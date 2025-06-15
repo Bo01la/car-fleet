@@ -8,7 +8,10 @@ function Reports() {
 
   return (
     <>
-      <ActionsTable actions={reports} />
+      {reports.length === 0 && (
+        <p className="mx-auto max-w-fit">no reports to be displayed...</p>
+      )}
+      {reports.length > 0 && <ActionsTable actions={reports} />}
     </>
   );
 }

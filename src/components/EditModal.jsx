@@ -5,13 +5,13 @@ import { db } from "../firebase";
 import { DataContext } from "../store/DataContext";
 import { dateToSeconds, formatDateFromSeconds } from "../utils/dateFunctions";
 
-export default function Modal({ ref, id, onClose }) {
+export default function EditModal({ ref, id, onClose }) {
   const DOC_REF = doc(db, "vehicles", id);
   const { cars, setCars } = useContext(DataContext);
   const car = cars.find((car) => car.id === id);
   const dialogRef = useRef();
   const plateNumber = useRef();
-  const distance = useRef();
+  const distance = useRef(); 
   const status = useRef();
   const driver = useRef();
   const model = useRef();

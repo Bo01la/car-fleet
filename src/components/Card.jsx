@@ -1,12 +1,12 @@
 import { useRef, useEffect, useState } from "react";
 
-import Modal from "./Modal";
+import EditModal from "./EditModal";
 
-export default function Card({
+export default function Card({ 
   id,
   plateNumber,
   distanceUsedKm,
-  status,
+  status, 
   driver,
   model,
   needsMaintenance,
@@ -36,7 +36,7 @@ export default function Card({
 
   return (
     <>
-      {theModal && <Modal ref={modalRef} id={id} onClose={hide} />}
+      {theModal && <EditModal ref={modalRef} id={id} onClose={hide} />}
       <div
         className={`relative flex flex-col gap-4 p-3.5 border-2 overflow-auto scrollbar-hide max-h-80 ${
           needsMaintenance ? " border-red-600" : "border-green-600"
