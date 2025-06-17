@@ -25,9 +25,16 @@ function getCurrentMonthYear() {
   return `${month}-${year}`;
 }
 
+// second to number of months
+function secondsToMonths(seconds) {
+  const secondsPerMonth = 2629743; // متوسط عدد الثواني في شهر
+  return seconds / secondsPerMonth;
+}
+
 export {
   dateToSeconds,
   formatDateFromSeconds,
   dmyDateFormat,
   getCurrentMonthYear,
+  secondsToMonths,
 };

@@ -3,7 +3,7 @@ import { useState, useRef, useContext, useEffect } from "react";
 import { dmyDateFormat } from "../utils/dateFunctions";
 import { DataContext } from "../store/DataContext";
 import Card from "./Card";
-import AddCar from "./AddCar"
+import AddCar from "./AddCar";
 
 function AllCars() {
   const { cars } = useContext(DataContext);
@@ -28,7 +28,7 @@ function AllCars() {
   return (
     <>
       <div
-        className="flex gap-2 items-center ml-14 mb-4 cursor-pointer"
+        className="flex gap-2 w-fit items-center ml-14 mb-4 cursor-pointer"
         onClick={show}
       >
         <img

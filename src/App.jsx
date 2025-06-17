@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import Reports from "./components/Reports";
+import Totals from "./components/Totals";
 import AllCars from "./components/AllCars";
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
         </div>
 
         {section === "cars" && <AllCars />}
+        {section === "totals" && <Totals />}
         {section === "reports" && <Reports />}
       </div>
     </>

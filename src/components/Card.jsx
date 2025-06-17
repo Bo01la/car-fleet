@@ -1,12 +1,14 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 
 import EditModal from "./EditModal";
+import { DataContext } from "../store/DataContext";
+import { dateToSeconds, secondsToMonths } from "../utils/dateFunctions";
 
-export default function Card({ 
+export default function Card({
   id,
   plateNumber,
   distanceUsedKm,
-  status, 
+  status,
   driver,
   model,
   needsMaintenance,
@@ -19,12 +21,21 @@ export default function Card({
 }) {
   const [theModal, setTheModal] = useState(false);
   const modalRef = useRef();
+  const { currentMonth } = useContext(DataContext);
+  const sinceLastMaintenance = secondsToMonths(
+    dateToSeconds(upcomingMaintenanceDate) - dateToSeconds(`01-${currentMonth}`)
+  );
+  
 
   useEffect(() => {
     if (theModal) {
       modalRef.current.open();
     }
   }, [theModal]);
+
+  useEffect(()=> async ()=>{
+    
+  })
 
   function show() {
     setTheModal(true);
