@@ -12,25 +12,26 @@ export default function DataContextProvider({ children }) {
   const [reports, setReports] = useState([]);
 
   // fetching car data
-  useEffect(
-    () => async () => {
+  useEffect(() => {
+    async function fetchData() {
       try {
         const data = await getDocs(COLLECTION_REF);
         const filteredData = data.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }));
-        setCars(() => filteredData);
+        setCars(filteredData);
       } catch (error) {
-        console.log(error.message);
+        console.log("Error fetching cars:", error.message);
       }
-    },
-    []
-  );
+    }
+
+    fetchData();
+  }, []);
 
   // fetching reports data
-  useEffect(
-    () => async () => {
+  useEffect(() => {
+    async function fetchedReports() {
       try {
         const actionsRef = collection(db, "reports", currentMonth, "actions");
         const snapshot = await getDocs(actionsRef);
@@ -43,9 +44,9 @@ export default function DataContextProvider({ children }) {
       } catch (error) {
         console.log("error is", error);
       }
-    },
-    []
-  );
+    }
+    fetchedReports();
+  }, []);
 
   const ctxValue = {
     cars,

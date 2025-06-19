@@ -21,16 +21,19 @@ function Reports() {
     }
   }, [addReport]);
 
-  useEffect(() => async () => {
-    try {
-      const reportsCollection = collection(db, "reports");
-      const availableDates = await getDocs(reportsCollection);
-      const optionsSet = availableDates.docs.map((option) => option.id);
-      setOptions(optionsSet);
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    async function fetchReportsOptions() {
+      try {
+        const reportsCollection = collection(db, "reports");
+        const availableDates = await getDocs(reportsCollection);
+        const optionsSet = availableDates.docs.map((option) => option.id);
+        setOptions(optionsSet);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  });
+    fetchReportsOptions();
+  }, []);
 
   async function handleFilteredReports(date) {
     try {
