@@ -10,6 +10,7 @@ function App() {
   function sectionToggleHandler(name) {
     setSection(name);
   }
+  
 
   return (
     <>

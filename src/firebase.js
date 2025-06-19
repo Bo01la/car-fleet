@@ -19,5 +19,5 @@ const COLLECTION_REF = collection(db, "vehicles");
 export { db };
 
 export { COLLECTION_REF };
-
+console.log(import.meta.env);
 console.log("Connected to Firebase project:", firebaseConfig.projectId);
