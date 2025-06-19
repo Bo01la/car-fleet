@@ -1,8 +1,10 @@
 import { useRef, useEffect, useState, useContext } from "react";
+import { doc, updateDoc } from "firebase/firestore";
 
 import EditModal from "./EditModal";
 import { DataContext } from "../store/DataContext";
 import { dateToSeconds, secondsToMonths } from "../utils/dateFunctions";
+import { db } from "../firebase";
 
 export default function Card({
   id,
@@ -21,21 +23,59 @@ export default function Card({
 }) {
   const [theModal, setTheModal] = useState(false);
   const modalRef = useRef();
-  const { currentMonth } = useContext(DataContext);
+  const { currentMonth, setCars } = useContext(DataContext);
   const sinceLastMaintenance = secondsToMonths(
-    dateToSeconds(upcomingMaintenanceDate) - dateToSeconds(`01-${currentMonth}`)
+    dateToSeconds(`01-${currentMonth}`) - dateToSeconds(lastMaintenanceDate)
   );
-  
+
+  console.log("current month", dateToSeconds(`01-${currentMonth}`));
+
+  useEffect(() => {
+    console.log(sinceLastMaintenance, id);
+
+    const shouldSetTrue = sinceLastMaintenance >= 5;
+    const shouldSetFalse =
+      sinceLastMaintenance < 5 && needsMaintenance === true;
+
+    const updateDb = async (newValue) => {
+      try {
+        const carDoc = doc(db, "vehicles", id);
+        await updateDoc(carDoc, {
+          "maintenanceStatus.needsMaintenance": newValue,
+        });
+        console.log(`Updated car ${id} to needsMaintenance = ${newValue}`);
+
+        // تحديث الـ state محليًا
+        setCars((prev) =>
+          prev.map((car) =>
+            car.id === id
+              ? {
+                  ...car,
+                  maintenanceStatus: {
+                    ...car.maintenanceStatus,
+                    needsMaintenance: newValue,
+                  },
+                }
+              : car
+          )
+        );
+      } catch (error) {
+        console.error("Error updating car:", error);
+      }
+    };
+
+    if (shouldSetTrue && needsMaintenance === false) {
+      updateDb(true);
+    } else if (shouldSetFalse) {
+      updateDb(false);
+    }
+  }, [sinceLastMaintenance, needsMaintenance]);
 
   useEffect(() => {
     if (theModal) {
       modalRef.current.open();
     }
   }, [theModal]);
-
-  useEffect(()=> async ()=>{
-    
-  })
 
   function show() {
     setTheModal(true);
@@ -50,7 +90,9 @@ export default function Card({
       {theModal && <EditModal ref={modalRef} id={id} onClose={hide} />}
       <div
         className={`relative flex flex-col gap-4 p-3.5 border-2 overflow-auto scrollbar-hide max-h-80 ${
-          needsMaintenance ? " border-red-600" : "border-green-600"
+          needsMaintenance || status === "maintenance"
+            ? " border-red-600"
+            : "border-green-600"
         } rounded-lg`}
       >
         <p className="font-semibold">

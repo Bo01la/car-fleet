@@ -1,6 +1,14 @@
-//convert date to secons
+//convert date to secons after converting date to YYYY/MMM/DD
 function dateToSeconds(dateStr) {
-  return Math.floor(new Date(dateStr).getTime() / 1000);
+  // if YYYY/MM/DD from input field
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    return Math.floor(new Date(dateStr).getTime() / 1000);
+  }
+
+  // if DD/MM/YYYY OR DD-MM-YYYY
+  const [day, month, year] = dateStr.split(/[-/]/).map(Number);
+  const dateObj = new Date(year, month - 1, day);
+  return Math.floor(dateObj.getTime() / 1000);
 }
 
 // seconds to YYYY/MM/DD (used wen submitting forms)
